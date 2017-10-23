@@ -1,9 +1,8 @@
 public class Plane {
-	public Coordinate[] coordinates = new Coordinate[3];
 	public Line[] lines = new Line[10];
 	
 	/**
-	 * Constructs a Plane object of 10 lines. 
+	 * Constructs a Plane of 10 lines. 
 	 * <code>
 	 * [a][b][ ][ ] <br>
 	 * [c][ ][ ][ ] <br>
@@ -12,15 +11,20 @@ public class Plane {
 	 * </code>
 	 **/
 	public Plane(Coordinate a, Coordinate b, Coordinate c) {
-
+	
 		
 	}
 	
-	public Coordinate getCoord() {
+	public Coordinate getXYZCoordinate(int r, int c) {
 		return null;
 	}
 	
 	
+	/**
+	 * Returns an array of <code>Line</code>'s. <br>
+	 * Hopefully size 10, otherwise messed up.
+	 * @return Line[10] lines
+	 **/
 	public Line[] getLines() {
 		return null;
 	}
