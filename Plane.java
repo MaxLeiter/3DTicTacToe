@@ -1,4 +1,7 @@
 public class Plane {
+	/**
+	 * The lines in a plane.
+	 **/
 	public Line[] lines = new Line[10];
 	
 	/**
