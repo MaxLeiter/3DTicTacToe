@@ -1,7 +1,5 @@
 public class Line
 {
-	
-	
 	private Coordinate[] coordinates = new Coordinate[4];
 
 	/**
@@ -24,6 +22,18 @@ public class Line
 		}
 	}
 	
+	/**
+	 * Constructs a line based on an index and coordinate. <br>
+	 * Used in PLane.java
+	 * @param index
+	 * @param coordinate
+	 */
+	public Line() {
+		for (int i = 0; i < 4; i++) {
+			coordinates[i] = null;
+		}
+	}
+
 	/**
 	 * Size of the coordinates array
 	 * @return int coordinates.length
