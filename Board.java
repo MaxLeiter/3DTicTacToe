@@ -3,7 +3,7 @@ public class Board {
 	/**
 	 * The 4x4x4 representation of the board.
 	 **/
-	private Tile[][][] board;
+	private static Tile[][][] board;
 
 	/**
 	 * The Plane[18] array.
@@ -47,13 +47,13 @@ public class Board {
 		
 		// y = x
 		planes[12] = new Plane(new Coordinate(0, 0, 0), new Coordinate (0, 1, 1), new Coordinate (1, 0, 0)); // y = x
-		planes[13] = new Plane(new Coordinate(0, 3, 0), new Coordinate (1, 3, 0), new Coordinate (0, 2, 1)); // 3 - y = x
+		planes[13] = new Plane(new Coordinate(0, 3, 0), new Coordinate (0, 2, 1), new Coordinate (1, 3, 0)); // 3 - y = x
 
 		// z = x
 		planes[14] = new Plane(new Coordinate(0, 0, 0), new Coordinate (0, 1, 0), new Coordinate (1, 0, 1)); // z = x
 		planes[15] = new Plane(new Coordinate(3, 0, 0), new Coordinate (3, 1, 0), new Coordinate (2, 0, 1)); // 3 - z = x
 		
-		// x = y =z
+		// x = y = z
 		planes[16] = new Plane(new Coordinate(0, 0, 0), new Coordinate (1, 1, 0), new Coordinate (0, 0, 1)); // x = y = z
 		planes[17] = new Plane(new Coordinate(0, 3, 0), new Coordinate (0, 3, 1), new Coordinate (1, 2, 0)); // 3 - x = y = z
 
@@ -65,17 +65,28 @@ public class Board {
 			}
 		}
 		
+	}
+
+	private void print() {
 		for (int i = 0; i < planes.length; i++) {
 			System.out.println(i + " -----");
 			planes[i].print();
 		}
 	}
 
-	private void print() {
-		
+	public static Tile getTile(Coordinate coord) {
+		return board[coord.getX()][coord.getY()][coord.getZ()];
 	}
-
-
+	
+	private boolean isWon() {
+		for (int i = 0; i < planes.length; i++) {
+			if (planes[i].hasWonLine()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static enum Tile {
 		X,
 		O,

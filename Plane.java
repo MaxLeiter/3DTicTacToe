@@ -105,4 +105,13 @@ public class Plane {
 			System.out.println();
 		}
 	}
+	
+	public boolean hasWonLine() {
+		for (int i = 0; i < lines.length; i++) {
+			for (int j = 0; j < lines[0].getSize(); j++) {
+				Board.Tile tile = Board.getTile(lines[i].getCoords()[j]);
+			}
+		}
+		return false;
+	}
 }
