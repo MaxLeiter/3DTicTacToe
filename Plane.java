@@ -1,9 +1,7 @@
 public class Plane {
 
 	private int cxDiff, cyDiff, czDiff, rxDiff, ryDiff, rzDiff;
-	/**
-	 * Top left of plane (0, 0)
-	 */
+
 	Coordinate a;
 
 	/**
@@ -62,7 +60,7 @@ public class Plane {
 					lines[count].setCoord(lineIndex, new Coordinate(a.getX() + lineIndex * rxDiff + lineIndex * cxDiff, a.getY() + lineIndex * ryDiff + lineIndex * cyDiff, a.getZ() + lineIndex * rzDiff + lineIndex * czDiff));
 					break;
 				case 9: // y = 3 - x
-					lines[count].setCoord(lineIndex, new Coordinate(a.getX() + 3 * rxDiff - lineIndex * rxDiff - lineIndex * cxDiff, a.getY() + 3 * ryDiff - lineIndex * ryDiff - lineIndex * cyDiff, a.getZ() + 3 * rzDiff - lineIndex * rzDiff - lineIndex * czDiff));
+					lines[count].setCoord(lineIndex, new Coordinate(a.getX() + 3 * rxDiff + 3 * cxDiff - lineIndex * rxDiff - lineIndex * cxDiff, a.getY() + 3 * ryDiff + 3 * cyDiff - lineIndex * ryDiff - lineIndex * cyDiff, a.getZ() + 3 * rzDiff + 3 * czDiff - lineIndex * rzDiff - lineIndex * czDiff));
 					break;
 				default:
 					// no-op
@@ -91,10 +89,13 @@ public class Plane {
 	 * @return Line[10] lines
 	 **/
 	public Line[] getLines() {
-		return null;
+		return lines;
 	}
 
 
+	/**
+	 * Print 10 lines in a plane
+	 */
 	public void print() {
 		for (int i = 0; i < lines.length; i++) {
 			System.out.print(i + ": ");
