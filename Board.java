@@ -55,7 +55,7 @@ public class Board {
 		
 		// x = y = z
 		planes[16] = new Plane(new Coordinate(0, 0, 0), new Coordinate (1, 1, 0), new Coordinate (0, 0, 1)); // x = y = z
-		planes[17] = new Plane(new Coordinate(0, 3, 0), new Coordinate (0, 3, 1), new Coordinate (1, 2, 0)); // 3 - x = y = z
+		planes[17] = new Plane(new Coordinate(3, 0, 0), new Coordinate (2, 1, 0), new Coordinate (3, 0, 1)); // 3 - x = y = z
 
 		for (int x = 0; x < board.length; x++) {
 			for (int y = 0; y < board[0].length; y++) {
@@ -63,6 +63,16 @@ public class Board {
 					board[x][y][z] = Tile.BLANK;
 				}
 			}
+		}
+		print();
+		board[0][0][0] = Tile.X;
+		board[1][0][0] = Tile.X;
+		board[2][0][0] = Tile.X;
+		board[3][0][0] = Tile.X;
+		if (isWon()) {
+			System.out.println("Won!");
+		} else {
+			System.out.println("Not won");
 		}
 		
 	}

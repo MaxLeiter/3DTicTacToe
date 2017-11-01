@@ -108,9 +108,26 @@ public class Plane {
 	
 	public boolean hasWonLine() {
 		for (int i = 0; i < lines.length; i++) {
-			for (int j = 0; j < lines[0].getSize(); j++) {
+			int counter = 0;
+			Board.Tile previous = Board.getTile(lines[i].getCoords()[0]); // first tile
+			for (int j = 1; j < lines[0].getSize(); j++) {
 				Board.Tile tile = Board.getTile(lines[i].getCoords()[j]);
+				if (tile.equals(Board.Tile.X) || tile.equals(Board.Tile.O)) {
+					if (tile.equals(previous)) {
+						counter++;
+						previous = tile;
+					} else {
+						break;
+					}
+				} else {
+					break;
+				}
+				if (counter == 3) {
+					System.out.println("Won!");
+					return true;
+				}
 			}
+			counter = 0;
 		}
 		return false;
 	}
