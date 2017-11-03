@@ -86,6 +86,26 @@ public class Board {
 		}
 		return coords;
 	}
+	
+	public float evaluate() {
+		float eval = 0.0f;
+		for (int i = 0; i < planes.length; i++) {
+			for (int j = 0; j < planes[0].getLines().length; j++) {
+				int counter = 0;
+				Tile prev = this.getTile(planes[i].getLines()[j].getCoords()[0]);
+				for (int k = 1; k < planes[0].getLines()[i].getCoords().length; k++) {
+					Tile current = this.getTile(planes[i].getLines()[j].getCoords()[k]);
+
+					if ((prev == current) && (current != Tile.BLANK)) {
+						//count++;
+					}
+						
+					prev = current;
+				}
+			}
+		}
+		return 0;
+	}
 
 	private void print() {
 		for (int i = 0; i < planes.length; i++) {
@@ -94,7 +114,7 @@ public class Board {
 		}
 	}
 
-	public static Tile getTile(Coordinate coord) {
+	public Tile getTile(Coordinate coord) {
 		return board[coord.getX()][coord.getY()][coord.getZ()];
 	}
 

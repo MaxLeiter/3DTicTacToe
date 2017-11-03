@@ -15,7 +15,7 @@ public class Plane {
 	 * [ ][9][8][ ] <br>
 	 * [9][ ][ ][8] <br>
 	 **/
-	public Line[] lines = new Line[10];
+	private Line[] lines = new Line[10];
 
 	/**
 	 * Constructs a Plane of 10 lines. 
