@@ -104,8 +104,9 @@ public class Plane {
 			}
 			System.out.println();
 		}
+		return;
 	}
-	
+
 	public boolean hasWonLine() {
 		for (int i = 0; i < lines.length; i++) {
 			int counter = 0;
@@ -123,7 +124,6 @@ public class Plane {
 					break;
 				}
 				if (counter == 3) {
-					System.out.println("Won!");
 					return true;
 				}
 			}

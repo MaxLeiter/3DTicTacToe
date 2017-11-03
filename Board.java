@@ -10,7 +10,7 @@ public class Board {
 	 * (0, 0, 0) = bottom left closest to you. Z up. X right. Y away. Because who cares about relative, right?
 	 **/
 	private Plane[] planes;
-	
+
 	/**
 	 * Construct a board object
 	 **/
@@ -18,15 +18,14 @@ public class Board {
 		board = new Tile[4][4][4];
 		planes = new Plane[18];
 		this.construct();
-		this.print();
 	}
 
-	
+
 	/**
 	 * Fill the board with <code>Tile.BLANK</code>
 	 **/
 	private void construct() {
-	
+
 		// Horizontal
 		planes[0] = new Plane(new Coordinate(0, 0, 0), new Coordinate (0, 1, 0), new Coordinate (1, 0, 0)); // first flat
 		planes[1] = new Plane(new Coordinate(0, 0, 1), new Coordinate (0, 1, 1), new Coordinate (1, 0, 1)); // second bottom flat 
@@ -38,13 +37,13 @@ public class Board {
 		planes[5] = new Plane(new Coordinate(1, 0, 0), new Coordinate (1, 1, 0), new Coordinate (1, 0, 1)); // vert second from left
 		planes[6] = new Plane(new Coordinate(2, 0, 0), new Coordinate (2, 1, 0), new Coordinate (2, 0, 1)); // vert third from left
 		planes[7] = new Plane(new Coordinate(3, 0, 0), new Coordinate (3, 1, 0), new Coordinate (3, 0, 1)); // vert right
-		
+
 		// Vertical Depths (this is not a nomenclature course)
 		planes[8] = new Plane(new Coordinate(0, 0, 0), new Coordinate (0, 0, 1), new Coordinate (1, 0, 0)); // vert closest to you
 		planes[9] = new Plane(new Coordinate(0, 1, 0), new Coordinate (0, 1, 1), new Coordinate (1, 1, 0)); // vert second closest to you
 		planes[10] = new Plane(new Coordinate(0, 2, 0), new Coordinate (0, 2, 1), new Coordinate (1, 2, 0)); // vert third closest
 		planes[11] = new Plane(new Coordinate(0, 3, 0), new Coordinate (0, 3, 1), new Coordinate (1, 3, 0)); // vert farthest away
-		
+
 		// y = x
 		planes[12] = new Plane(new Coordinate(0, 0, 0), new Coordinate (0, 1, 1), new Coordinate (1, 0, 0)); // y = x
 		planes[13] = new Plane(new Coordinate(0, 3, 0), new Coordinate (0, 2, 1), new Coordinate (1, 3, 0)); // 3 - y = x
@@ -52,7 +51,7 @@ public class Board {
 		// z = x
 		planes[14] = new Plane(new Coordinate(0, 0, 0), new Coordinate (0, 1, 0), new Coordinate (1, 0, 1)); // z = x
 		planes[15] = new Plane(new Coordinate(3, 0, 0), new Coordinate (3, 1, 0), new Coordinate (2, 0, 1)); // 3 - z = x
-		
+
 		// x = y = z
 		planes[16] = new Plane(new Coordinate(0, 0, 0), new Coordinate (1, 1, 0), new Coordinate (0, 0, 1)); // x = y = z
 		planes[17] = new Plane(new Coordinate(3, 0, 0), new Coordinate (2, 1, 0), new Coordinate (3, 0, 1)); // 3 - x = y = z
@@ -64,17 +63,7 @@ public class Board {
 				}
 			}
 		}
-		print();
-		board[0][0][0] = Tile.X;
-		board[1][0][0] = Tile.X;
-		board[2][0][0] = Tile.X;
-		board[3][0][0] = Tile.X;
-		if (isWon()) {
-			System.out.println("Won!");
-		} else {
-			System.out.println("Not won");
-		}
-		
+
 	}
 
 	private void print() {
@@ -87,7 +76,7 @@ public class Board {
 	public static Tile getTile(Coordinate coord) {
 		return board[coord.getX()][coord.getY()][coord.getZ()];
 	}
-	
+
 	private boolean isWon() {
 		for (int i = 0; i < planes.length; i++) {
 			if (planes[i].hasWonLine()) {
@@ -96,7 +85,7 @@ public class Board {
 		}
 		return false;
 	}
-	
+
 	public static enum Tile {
 		X,
 		O,
