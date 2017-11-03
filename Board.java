@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class Board {
 	/**
@@ -64,6 +66,25 @@ public class Board {
 			}
 		}
 
+	}
+
+
+	/**
+	 * Returns Coordinates of Tile.Blank's
+	 * @return Coordinate[] of Tile.BLANK's
+	 */
+	public List<Coordinate> getValidMoves() {
+		List<Coordinate> coords = new ArrayList<Coordinate>();
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				for (int k = 0; k < board[i].length; k++) {
+					if (board[i][j][k].equals(Tile.BLANK)) {
+						coords.add(new Coordinate(i, j, k));
+					}
+				}
+			}
+		}
+		return coords;
 	}
 
 	private void print() {
