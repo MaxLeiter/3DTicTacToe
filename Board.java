@@ -9,7 +9,7 @@ public class Board {
 
 
 	/** Constants for board evaluation **/
-	private static float c1 = 10,
+	private static float c1 = 1,
 			c2 = 100,
 			c3 = 10000;
 
@@ -72,7 +72,7 @@ public class Board {
 			}
 		}
 
-		/*	board[0][0][0] = Tile.X;
+		board[0][0][0] = Tile.X;
 		board[1][0][0] = Tile.X;
 		board[2][0][0] = Tile.O;
 		board[3][0][0] = Tile.O;
@@ -84,14 +84,9 @@ public class Board {
 		board[2][2][0] = Tile.X;
 		board[3][2][0] = Tile.X;
 		board[2][3][0] = Tile.O;
-		board[3][3][0] = Tile.X;*/
+		board[3][3][0] = Tile.X;
 
-		board[0][0][0] = Tile.O;
-		board[1][0][0] = Tile.O;
-		board[2][0][0] = Tile.O;
-		board[3][0][0] = Tile.O;
-
-		System.out.println(evaluate());
+		System.out.println(evaluatePlane(planes[0]));
 	}
 
 
@@ -113,61 +108,75 @@ public class Board {
 		return coords;
 	}
 
-	public double evaluate() {
+	private double evaluatePlane(Plane plane) {
 		double eval = 0.0d;
-		for (int i = 0; i < planes.length; i++) {
-			for (int j = 0; j < planes[i].getLines().length; j++) {
-				int counter = 0;
-				Tile prev = getTile(planes[i].getLines()[j].getCoords()[0]);
+		for (int j = 0; j < plane.getLines().length; j++) {
+			int counter = 0;
+			Tile prev = getTile(plane.getLines()[j].getCoords()[0]);
 
-				if (prev == Tile.X) {
-					counter = 1;
-				} else if (prev == Tile.O) {
-					counter = -1;
-				}
+			if (prev == Tile.X) {
+				counter = 1;
+			} else if (prev == Tile.O) {
+				counter = -1;
+			}
 
-				for (int k = 1; k < planes[i].getLines()[j].getCoords().length; k++) {
-					Tile current = getTile(planes[i].getLines()[j].getCoords()[k]);
+			for (int k = 1; k < plane.getLines()[j].getCoords().length; k++) {
+				Tile current = getTile(plane.getLines()[j].getCoords()[k]);
 
-					if (current != Tile.BLANK) {
-						if (prev == current) {
-							if (prev == Tile.X) {
+				if (current != Tile.BLANK) {
+					if (prev == current) {
+						if (current == Tile.X) {
+							counter++;
+						} else if (current == Tile.O) {
+							counter--;
+						}
+					} else {
+						if (prev == Tile.BLANK) {
+							prev = current;
+							if (current == Tile.X) {
 								counter++;
-							} else if (prev == Tile.O) {
+							} else if (current == Tile.O) {
 								counter--;
 							}
-						} else {
+						} else { 
+							counter = 0;
 							break;
 						}
 					}
-
-					prev = current;
 				}
-
-
-				switch (Math.abs(counter)) {
-				case 0:
-					eval += 0;
-					break;
-				case 1:
-					eval += c1 * Math.signum(counter);
-					break;
-				case 2:
-					eval += c2 * Math.signum(counter);
-					break;
-				case 3:
-					eval += c3 * Math.signum(counter);
-					break;
-				case 4:
-					if (counter > 0) {
-						eval += Double.POSITIVE_INFINITY;
-					} else if (counter < 0) {
-						eval += Double.NEGATIVE_INFINITY;
-					}
-					break;
-				}
-
 			}
+
+			System.out.println(counter);
+
+			switch (Math.abs(counter)) {
+			case 0:
+				eval += 0;
+				break;
+			case 1:
+				eval += c1 * Math.signum(counter);
+				break;
+			case 2:
+				eval += c2 * Math.signum(counter);
+				break;
+			case 3:
+				eval += c3 * Math.signum(counter);
+				break;
+			case 4:
+				if (counter > 0) {
+					eval += Double.POSITIVE_INFINITY;
+				} else if (counter < 0) {
+					eval += Double.NEGATIVE_INFINITY;
+				}
+				break;
+			}
+		}
+		return eval;
+	}
+
+	public double evaluate() {
+		double eval = 0.0d;
+		for (int i = 0; i < planes.length; i++) {
+			eval += evaluatePlane(planes[i]);
 		}
 		return eval;
 	}
