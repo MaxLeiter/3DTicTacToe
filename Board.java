@@ -7,6 +7,12 @@ public class Board {
 	 **/
 	private static Tile[][][] board;
 
+
+	/** Constants for board evaluation **/
+	private static float c1 = 10,
+			c2 = 100,
+			c3 = 10000;
+
 	/**
 	 * The Plane[18] array.
 	 * (0, 0, 0) = bottom left closest to you. Z up. X right. Y away. Because who cares about relative, right?
@@ -66,6 +72,26 @@ public class Board {
 			}
 		}
 
+		/*	board[0][0][0] = Tile.X;
+		board[1][0][0] = Tile.X;
+		board[2][0][0] = Tile.O;
+		board[3][0][0] = Tile.O;
+		board[0][1][0] = Tile.X;
+		board[2][1][0] = Tile.O;
+		board[3][1][0] = Tile.O;
+		board[0][2][0] = Tile.X;
+		board[1][2][0] = Tile.O;
+		board[2][2][0] = Tile.X;
+		board[3][2][0] = Tile.X;
+		board[2][3][0] = Tile.O;
+		board[3][3][0] = Tile.X;*/
+
+		board[0][0][0] = Tile.O;
+		board[1][0][0] = Tile.O;
+		board[2][0][0] = Tile.O;
+		board[3][0][0] = Tile.O;
+
+		System.out.println(evaluate());
 	}
 
 
@@ -86,25 +112,64 @@ public class Board {
 		}
 		return coords;
 	}
-	
-	public float evaluate() {
-		float eval = 0.0f;
-		for (int i = 0; i < planes.length; i++) {
-			for (int j = 0; j < planes[0].getLines().length; j++) {
-				int counter = 0;
-				Tile prev = this.getTile(planes[i].getLines()[j].getCoords()[0]);
-				for (int k = 1; k < planes[0].getLines()[i].getCoords().length; k++) {
-					Tile current = this.getTile(planes[i].getLines()[j].getCoords()[k]);
 
-					if ((prev == current) && (current != Tile.BLANK)) {
-						//count++;
+	public double evaluate() {
+		double eval = 0.0d;
+		for (int i = 0; i < planes.length; i++) {
+			for (int j = 0; j < planes[i].getLines().length; j++) {
+				int counter = 0;
+				Tile prev = getTile(planes[i].getLines()[j].getCoords()[0]);
+
+				if (prev == Tile.X) {
+					counter = 1;
+				} else if (prev == Tile.O) {
+					counter = -1;
+				}
+
+				for (int k = 1; k < planes[i].getLines()[j].getCoords().length; k++) {
+					Tile current = getTile(planes[i].getLines()[j].getCoords()[k]);
+
+					if (current != Tile.BLANK) {
+						if (prev == current) {
+							if (prev == Tile.X) {
+								counter++;
+							} else if (prev == Tile.O) {
+								counter--;
+							}
+						} else {
+							break;
+						}
 					}
-						
+
 					prev = current;
 				}
+
+
+				switch (Math.abs(counter)) {
+				case 0:
+					eval += 0;
+					break;
+				case 1:
+					eval += c1 * Math.signum(counter);
+					break;
+				case 2:
+					eval += c2 * Math.signum(counter);
+					break;
+				case 3:
+					eval += c3 * Math.signum(counter);
+					break;
+				case 4:
+					if (counter > 0) {
+						eval += Double.POSITIVE_INFINITY;
+					} else if (counter < 0) {
+						eval += Double.NEGATIVE_INFINITY;
+					}
+					break;
+				}
+
 			}
 		}
-		return 0;
+		return eval;
 	}
 
 	private void print() {
@@ -114,7 +179,7 @@ public class Board {
 		}
 	}
 
-	public Tile getTile(Coordinate coord) {
+	public static Tile getTile(Coordinate coord) {
 		return board[coord.getX()][coord.getY()][coord.getZ()];
 	}
 
