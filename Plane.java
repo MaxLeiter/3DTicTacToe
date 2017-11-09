@@ -96,7 +96,7 @@ public class Plane {
 	/**
 	 * Print 10 lines in a plane
 	 */
-	public void print() {
+	public void printLines() {
 		for (int i = 0; i < lines.length; i++) {
 			System.out.print(i + ": ");
 			for (int j = 0; j < lines[i].getSize(); j++) {
@@ -104,7 +104,15 @@ public class Plane {
 			}
 			System.out.println();
 		}
-		return;
+	}
+
+	public void printTiles() {
+		for (int i = 3; i < 7; i++) {
+			for (int j = 0; j < lines[i].getSize(); j++) {
+				System.out.print(Board.getTile(lines[i].getCoords()[j]) + " ");
+			}
+			System.out.println();
+		}
 	}
 
 	public boolean hasWonLine() {

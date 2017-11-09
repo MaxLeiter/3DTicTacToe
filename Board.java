@@ -67,7 +67,7 @@ public class Board {
 		for (int x = 0; x < board.length; x++) {
 			for (int y = 0; y < board[0].length; y++) {
 				for (int z = 0; z < board[0][0].length; z++) {
-					board[x][y][z] = Tile.BLANK;
+					board[x][y][z] = Tile.B;
 				}
 			}
 		}
@@ -81,11 +81,12 @@ public class Board {
 		board[3][1][0] = Tile.O;
 		board[0][2][0] = Tile.X;
 		board[1][2][0] = Tile.O;
+		board[1][3][0] = Tile.O;
 		board[2][2][0] = Tile.X;
 		board[3][2][0] = Tile.X;
 		board[2][3][0] = Tile.O;
 		board[3][3][0] = Tile.X;
-
+		planes[0].printTiles();
 		System.out.println(evaluatePlane(planes[0]));
 	}
 
@@ -99,7 +100,7 @@ public class Board {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
 				for (int k = 0; k < board[i].length; k++) {
-					if (board[i][j][k].equals(Tile.BLANK)) {
+					if (board[i][j][k].equals(Tile.B)) {
 						coords.add(new Coordinate(i, j, k));
 					}
 				}
@@ -111,43 +112,27 @@ public class Board {
 	private double evaluatePlane(Plane plane) {
 		double eval = 0.0d;
 		for (int j = 0; j < plane.getLines().length; j++) {
-			int counter = 0;
-			Tile prev = getTile(plane.getLines()[j].getCoords()[0]);
+			int xCounter = 0,
+					oCounter = 0;
+			System.out.println(plane.getLines()[j].toString());
 
-			if (prev == Tile.X) {
-				counter = 1;
-			} else if (prev == Tile.O) {
-				counter = -1;
-			}
-
-			for (int k = 1; k < plane.getLines()[j].getCoords().length; k++) {
-				Tile current = getTile(plane.getLines()[j].getCoords()[k]);
-
-				if (current != Tile.BLANK) {
-					if (prev == current) {
-						if (current == Tile.X) {
-							counter++;
-						} else if (current == Tile.O) {
-							counter--;
-						}
-					} else {
-						if (prev == Tile.BLANK) {
-							prev = current;
-							if (current == Tile.X) {
-								counter++;
-							} else if (current == Tile.O) {
-								counter--;
-							}
-						} else { 
-							counter = 0;
-							break;
-						}
-					}
+			for (int k = 0; k < plane.getLines()[j].getSize(); k++) {
+				Tile rover = getTile(plane.getLines()[j].getCoords()[k]);
+				if (rover == Tile.X) {
+					xCounter++;
+				} else if (rover == Tile.O) {
+					oCounter++;
 				}
 			}
+			System.out.println("X: " + xCounter);
+			System.out.println("O: " + oCounter);
 
-			System.out.println(counter);
+			if (xCounter != 0 && oCounter != 0) {
+				xCounter = oCounter = 0;
+			}
 
+			int counter = xCounter != 0 ? xCounter : -oCounter;
+			System.out.println("Counter: " + counter);
 			switch (Math.abs(counter)) {
 			case 0:
 				eval += 0;
@@ -184,7 +169,7 @@ public class Board {
 	private void print() {
 		for (int i = 0; i < planes.length; i++) {
 			System.out.println(i + " -----");
-			planes[i].print();
+			planes[i].printTiles();
 		}
 	}
 
@@ -204,7 +189,7 @@ public class Board {
 	public static enum Tile {
 		X,
 		O,
-		BLANK
+		B
 	}
 
 }
