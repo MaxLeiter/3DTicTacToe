@@ -43,24 +43,41 @@ public class Plane {
 		// Here be dragons.
 		for (int count = 0; count < lines.length; count++) {
 			for (int lineIndex = 0; lineIndex < lines[count].getCoords().length; lineIndex++) {
+
 				switch(count) {
 				case 0: // vertical
 				case 1:
 				case 2:
 				case 3:
-					lines[count].setCoord(lineIndex, new Coordinate(a.getX() + lineIndex * rxDiff + (count % 4) * cxDiff, a.getY() + lineIndex * ryDiff + (count % 4) * cyDiff, a.getZ() + lineIndex * rzDiff + (count % 4) * czDiff));
+					lines[count].setCoord(lineIndex, new Coordinate(
+							a.getX() + lineIndex * rxDiff + (count % 4) * cxDiff,
+							a.getY() + lineIndex * ryDiff + (count % 4) * cyDiff,
+							a.getZ() + lineIndex * rzDiff + (count % 4) * czDiff
+							));
 					break;
 				case 4: // horizontal
 				case 5:
 				case 6:
 				case 7:
-					lines[count].setCoord(lineIndex, new Coordinate(a.getX() + lineIndex * cxDiff + (count % 4) * rxDiff, a.getY() + lineIndex * cyDiff + count * ryDiff, a.getZ() + lineIndex * czDiff + (count % 4) * rzDiff));
+					lines[count].setCoord(lineIndex, new Coordinate(
+							a.getX() + lineIndex * cxDiff + (count % 4) * rxDiff,
+							a.getY() + lineIndex * cyDiff + count * ryDiff,
+							a.getZ() + lineIndex * czDiff + (count % 4) * rzDiff
+							));
 					break;
 				case 8: // y = x
-					lines[count].setCoord(lineIndex, new Coordinate(a.getX() + lineIndex * rxDiff + lineIndex * cxDiff, a.getY() + lineIndex * ryDiff + lineIndex * cyDiff, a.getZ() + lineIndex * rzDiff + lineIndex * czDiff));
+					lines[count].setCoord(lineIndex, new Coordinate(
+							a.getX() + lineIndex * rxDiff + lineIndex * cxDiff,
+							a.getY() + lineIndex * ryDiff + lineIndex * cyDiff,
+							a.getZ() + lineIndex * rzDiff + lineIndex * czDiff
+							));
 					break;
 				case 9: // y = 3 - x
-					lines[count].setCoord(lineIndex, new Coordinate(a.getX() + 3 * rxDiff + 3 * cxDiff - lineIndex * rxDiff - lineIndex * cxDiff, a.getY() + 3 * ryDiff + 3 * cyDiff - lineIndex * ryDiff - lineIndex * cyDiff, a.getZ() + 3 * rzDiff + 3 * czDiff - lineIndex * rzDiff - lineIndex * czDiff));
+					lines[count].setCoord(lineIndex, new Coordinate(
+							a.getX() + 3 * rxDiff + 3 * cxDiff - lineIndex * rxDiff - lineIndex * cxDiff,
+							a.getY() + 3 * ryDiff + 3 * cyDiff - lineIndex * ryDiff - lineIndex * cyDiff,
+							a.getZ() + 3 * rzDiff + 3 * czDiff - lineIndex * rzDiff - lineIndex * czDiff
+							));
 					break;
 				default:
 					// no-op
