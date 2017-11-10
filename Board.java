@@ -112,8 +112,8 @@ public class Board {
 	private double evaluatePlane(Plane plane) {
 		double eval = 0.0d;
 		for (int j = 0; j < plane.getLines().length; j++) {
-			int xCounter = 0,
-					oCounter = 0;
+			int xCounter = 0;
+			int oCounter = 0;
 			System.out.println(plane.getLines()[j].toString());
 
 			for (int k = 0; k < plane.getLines()[j].getSize(); k++) {

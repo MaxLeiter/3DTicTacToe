@@ -107,7 +107,7 @@ public class Plane {
 	}
 
 	public void printTiles() {
-		for (int i = 3; i < 7; i++) {
+		for (int i = 3; i >= 0; i--) {
 			for (int j = 0; j < lines[i].getSize(); j++) {
 				System.out.print(Board.getTile(lines[i].getCoords()[j]) + " ");
 			}
