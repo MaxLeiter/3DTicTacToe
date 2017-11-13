@@ -5,7 +5,7 @@ public class Board {
 	/**
 	 * The 4x4x4 representation of the board.
 	 **/
-	private static Tile[][][] board;
+	private Tile[][][] board;
 
 
 	/** Constants for board evaluation **/
@@ -17,7 +17,7 @@ public class Board {
 	 * The Plane[18] array.
 	 * (0, 0, 0) = bottom left closest to you. Z up. X right. Y away. Because who cares about relative, right?
 	 **/
-	private Plane[] planes;
+	private static Plane[] planes;
 
 	/**
 	 * Construct a board object
@@ -26,6 +26,15 @@ public class Board {
 		board = new Tile[4][4][4];
 		planes = new Plane[18];
 		this.construct();
+	}
+
+	/**
+	 * Constructs board from tiles
+	 * @param Tile[][][] array of tiles
+	 */
+	public Board(Tile[][][] tiles, Plane[] planes) {
+		this.board = tiles;
+		this.planes =  planes;
 	}
 
 
@@ -72,23 +81,58 @@ public class Board {
 			}
 		}
 
+		/*
 		board[0][0][0] = Tile.X;
-		board[1][0][0] = Tile.X;
-		board[2][0][0] = Tile.O;
-		board[3][0][0] = Tile.O;
 		board[0][1][0] = Tile.X;
-		board[2][1][0] = Tile.O;
-		board[3][1][0] = Tile.O;
-		board[0][2][0] = Tile.X;
-		board[1][2][0] = Tile.O;
-		board[1][3][0] = Tile.O;
-		board[2][2][0] = Tile.X;
-		board[3][2][0] = Tile.X;
-		board[2][3][0] = Tile.O;
-		board[3][3][0] = Tile.X;
-		planes[0].printTiles();
-		System.out.println(evaluatePlane(planes[0]));
+		board[0][2][0] = Tile.O;
+		board[0][3][0] = Tile.O;
+		board[0][1][1] = Tile.X;
+		board[2][2][1] = Tile.O;
+		board[3][3][1] = Tile.O;
+		board[0][0][2] = Tile.X;
+		board[0][1][2] = Tile.O;
+		board[0][1][3] = Tile.O;
+		board[0][2][2] = Tile.X;
+		board[0][3][2] = Tile.X;
+		board[0][2][3] = Tile.O;
+		board[0][3][3] = Tile.X;
+		 */
+
+		System.out.println(evaluate());
 	}
+
+	/**
+	 * Makes a move
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param tile
+	 * @return new Board
+	 * @throws InvalidMoveException
+	 */
+	public Board move(Coordinate move, Tile tile) throws InvalidMoveException {
+		if (isSquareBlank(move)) {
+			throw new InvalidMoveException();
+		}
+		Board newBoard = this.copy();
+
+		newBoard.board[move.getX()][move.getY()][move.getZ()] = tile;
+		return newBoard;
+	}
+
+
+	/**
+	 * Returns if Tile at x, y, z is Blank
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return if Tile == Tile.B
+	 */
+	private boolean isSquareBlank(Coordinate square) {
+		Tile tile = this.getTile(new Coordinate(square.getX(), square.getY(), square.getZ()));
+		return tile == Tile.B;
+	}
+
 
 
 	/**
@@ -100,8 +144,9 @@ public class Board {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
 				for (int k = 0; k < board[i].length; k++) {
-					if (board[i][j][k].equals(Tile.B)) {
-						coords.add(new Coordinate(i, j, k));
+					Coordinate coord = new Coordinate(i, j, k);
+					if (isSquareBlank(coord)) {
+						coords.add(coord);
 					}
 				}
 			}
@@ -112,18 +157,23 @@ public class Board {
 	private double evaluatePlane(Plane plane) {
 		double eval = 0.0d;
 		for (int j = 0; j < plane.getLines().length; j++) {
+
 			int xCounter = 0;
 			int oCounter = 0;
-			System.out.println(plane.getLines()[j].toString());
+			this.printTiles(j);
 
 			for (int k = 0; k < plane.getLines()[j].getSize(); k++) {
 				Tile rover = getTile(plane.getLines()[j].getCoords()[k]);
+				if (j == 9) {
+					System.out.print(rover + "");
+				}
 				if (rover == Tile.X) {
 					xCounter++;
 				} else if (rover == Tile.O) {
 					oCounter++;
 				}
 			}
+
 			System.out.println("X: " + xCounter);
 			System.out.println("O: " + oCounter);
 
@@ -158,6 +208,42 @@ public class Board {
 		return eval;
 	}
 
+
+	public void printTiles(int plane) {
+		for (int j = 0; j < planes[plane].getLines()[plane].getSize(); j++) {
+			System.out.print(getTile(planes[plane].getLines()[plane].getCoords()[j]) + " ");
+		}
+		System.out.println();
+
+	}
+
+	public boolean hasWonLine() {
+		for (int i = 0; i < planes.length; i++) {
+			for (int j = 0; j < planes[i].getLines().length; j++) {
+				int counter = 0;
+				Board.Tile previous = getTile(planes[i].getLines()[j].getCoords()[0]); // first tile
+				for (int k = 1; k < planes[i].getLines()[0].getSize(); k++) {
+					Board.Tile tile = getTile(planes[i].getLines()[j].getCoords()[k]);
+					if (tile.equals(Board.Tile.X) || tile.equals(Board.Tile.O)) {
+						if (tile.equals(previous)) {
+							counter++;
+							previous = tile;
+						} else {
+							break;
+						}
+					} else {
+						break;
+					}
+					if (counter == 3) {
+						return true;
+					}
+				}
+				counter = 0;
+			}
+		}
+		return false;
+	}
+
 	public double evaluate() {
 		double eval = 0.0d;
 		for (int i = 0; i < planes.length; i++) {
@@ -169,19 +255,18 @@ public class Board {
 	private void print() {
 		for (int i = 0; i < planes.length; i++) {
 			System.out.println(i + " -----");
-			planes[i].printTiles();
+			this.printTiles(i);
 		}
 	}
 
-	public static Tile getTile(Coordinate coord) {
+	public Tile getTile(Coordinate coord) {
 		return board[coord.getX()][coord.getY()][coord.getZ()];
 	}
 
 	private boolean isWon() {
-		for (int i = 0; i < planes.length; i++) {
-			if (planes[i].hasWonLine()) {
-				return true;
-			}
+		if (hasWonLine()) {
+			return true;
+
 		}
 		return false;
 	}
@@ -192,4 +277,24 @@ public class Board {
 		B
 	}
 
+
+	private static class InvalidMoveException extends Exception {
+		public InvalidMoveException() {
+			super("Invalid move made. Square is not blank");
+		}
+	}
+
+	public Board copy() {
+		Tile[][][] newBoard = new Tile[4][4][4];
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				for (int k = 0; k < board[i][j].length; k++) {
+					newBoard[i][j][k] = board[i][j][k];
+				}
+			}
+		}
+
+		return new Board(newBoard, planes);
+	}
 }
+

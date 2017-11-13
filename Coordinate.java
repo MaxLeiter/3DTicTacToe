@@ -3,7 +3,7 @@ public class Coordinate {
 	 * int x, y, z;
 	 **/
 	private int x, y, z;
-	
+
 	/**
 	 * Construct a Coordinate object
 	 * @param x
@@ -15,7 +15,7 @@ public class Coordinate {
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	/**
 	 * Get the X coordinate
 	 * @return x
@@ -23,7 +23,7 @@ public class Coordinate {
 	public int getX() {
 		return x;
 	}
-	
+
 	/**
 	 * Get the Y coordinate
 	 * @return y
@@ -31,7 +31,7 @@ public class Coordinate {
 	public int getY() {
 		return y;
 	}
-	
+
 	/**
 	 * Get the Z coordinate
 	 * @return z
@@ -39,10 +39,10 @@ public class Coordinate {
 	public int getZ() {
 		return z;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getX() + "," + getY() + "," + getZ();
 	}
-	
+
 }

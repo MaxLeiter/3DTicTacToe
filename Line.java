@@ -58,14 +58,5 @@ public class Line
 	public Coordinate[] getCoords() {
 		return this.coordinates;
 	}
-	
-	
-	@Override
-	public String toString() {
-		String ret = "";
-		for (Coordinate c : this.coordinates) {
-			ret += Board.getTile(c);
-		}
-		return ret;
-	}
+
 }

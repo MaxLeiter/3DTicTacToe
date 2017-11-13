@@ -10,10 +10,10 @@ public class Plane {
 	 * lines[4-7] horizontal <br>
 	 * lines[8] y = x <br>
 	 * lines[9] y = 3 - x <br>
-	 * [8][ ][ ][9] <br>
-	 * [ ][8][9][ ] <br>
-	 * [ ][9][8][ ] <br>
 	 * [9][ ][ ][8] <br>
+	 * [ ][9][8][ ] <br>
+	 * [ ][8][9][ ] <br>
+	 * [8][ ][ ][9] <br>
 	 **/
 	private Line[] lines = new Line[10];
 
@@ -74,9 +74,9 @@ public class Plane {
 					break;
 				case 9: // y = 3 - x
 					lines[count].setCoord(lineIndex, new Coordinate(
-							a.getX() + 3 * rxDiff + 3 * cxDiff - lineIndex * rxDiff - lineIndex * cxDiff,
-							a.getY() + 3 * ryDiff + 3 * cyDiff - lineIndex * ryDiff - lineIndex * cyDiff,
-							a.getZ() + 3 * rzDiff + 3 * czDiff - lineIndex * rzDiff - lineIndex * czDiff
+							a.getX() + 3 * rxDiff - lineIndex * rxDiff + lineIndex * cxDiff,
+							a.getY() + 3 * ryDiff - lineIndex * ryDiff + lineIndex * cyDiff,
+							a.getZ() + 3 * rzDiff - lineIndex * rzDiff + lineIndex * czDiff
 							));
 					break;
 				default:
@@ -123,37 +123,4 @@ public class Plane {
 		}
 	}
 
-	public void printTiles() {
-		for (int i = 3; i >= 0; i--) {
-			for (int j = 0; j < lines[i].getSize(); j++) {
-				System.out.print(Board.getTile(lines[i].getCoords()[j]) + " ");
-			}
-			System.out.println();
-		}
-	}
-
-	public boolean hasWonLine() {
-		for (int i = 0; i < lines.length; i++) {
-			int counter = 0;
-			Board.Tile previous = Board.getTile(lines[i].getCoords()[0]); // first tile
-			for (int j = 1; j < lines[0].getSize(); j++) {
-				Board.Tile tile = Board.getTile(lines[i].getCoords()[j]);
-				if (tile.equals(Board.Tile.X) || tile.equals(Board.Tile.O)) {
-					if (tile.equals(previous)) {
-						counter++;
-						previous = tile;
-					} else {
-						break;
-					}
-				} else {
-					break;
-				}
-				if (counter == 3) {
-					return true;
-				}
-			}
-			counter = 0;
-		}
-		return false;
-	}
 }
