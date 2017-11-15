@@ -32,7 +32,7 @@ public class Board {
 	 * Constructs board from tiles
 	 * @param Tile[][][] array of tiles
 	 */
-	public Board(Tile[][][] tiles, Plane[] planes) {
+	public Board(Tile[][][] tiles, Plane[] plane) {
 		this.board = tiles;
 		this.planes =  planes;
 	}
@@ -217,7 +217,7 @@ public class Board {
 
 	}
 
-	public boolean hasWonLine() {
+	public boolean isWon() {
 		for (int i = 0; i < planes.length; i++) {
 			for (int j = 0; j < planes[i].getLines().length; j++) {
 				int counter = 0;
@@ -261,14 +261,6 @@ public class Board {
 
 	public Tile getTile(Coordinate coord) {
 		return board[coord.getX()][coord.getY()][coord.getZ()];
-	}
-
-	private boolean isWon() {
-		if (hasWonLine()) {
-			return true;
-
-		}
-		return false;
 	}
 
 	public static enum Tile {
