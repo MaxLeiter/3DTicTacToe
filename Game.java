@@ -1,56 +1,93 @@
 import java.util.ArrayList;
-import java.util.List;
-
-import Board.Tile;
 
 public class Game {
-	Board.Tile AITile = Board.Tile.O; // TODO: Set in constructor when you start game
-	Board.Tile AdversaryTile = Board.Tile.X; // TODO: Set in constructor when you start game
+	private Board.Tile ComputerTile = Board.Tile.O; // TODO: Set in constructor when you start game
+	private Board.Tile AdversaryTile = Board.Tile.X; // TODO: Set in constructor when you start game
 
-	public void minimax(Board board) {
-    	
+	public static void main(String[] args) {
+		Game game = new Game();
+		System.out.println(game.start(Board.Tile.X, 15));
+	}
+
+	public double start(Board.Tile turn, int maxDepth) {
+		return minimax(turn, new Board(), maxDepth);
 	}
 
 	/**
-	 * Returns utility value
+	 * Returns the best move to be made
+	 * @param tile
+	 * @param board
+	 * @param depth
+	 * @return
+	 */
+	public double minimax(Board.Tile tile, Board board, int depth) {
+		double score = 0;
+		if (board.isWon() || depth == 0) {
+			return score;
+		}
+
+		if (tile == ComputerTile) { 
+			score = max(tile, board, depth);
+		} else {
+			score = min(tile, board, depth);
+		}
+		return score;
+	}
+
+	/**
+	 * Returns utility value. Minimize opponent.
 	 * @param board
 	 * @return
 	 */
-    private double min(Board board) {
-    	Board tempBoard = board.copy();
-    	ArrayList<Coordinate> moves = (ArrayList<Coordinate>) board.getValidMoves();
-    	double[] evals = new double[moves.size()]; // evals is parallel with moves list
-    	
-    	for (int i = 0; i < evals.length; i++) {
-    		evals[i] = tempBoard.move(moves.get(i), AITile).evaluate();
-    		
-    	}
-    	
-    	double evaluate = board.move(new Coordinate(), AITile);
-    	if (board.evaluate() == Double.POSITIVE_INFINITY) {
-    		return evaluate;
-    	}
-        int min = Integer.MAX_VALUE;
-        int index = -1;
-        for (int i = 0; i < list.size(); ++i) {
-            if (evalMove(list.get(i)) < min) {
-                min = evalMove(list.get(i));
-                index = i;
-            }
-        }
-        return list.get(index);
-    }
 
-    private double max(Board board) {
-        int max = Integer.MIN_VALUE;
-        int index = -1;
-        for (int i = 0; i < list.size(); ++i) {
-            if (evalMove(list.get(i)) > max) {
-                max = list.get(i);
-                index = i;
-            }
-        }
-        return list.get(index);
-    }
+	// will take list of boards, and for each board, { call move() for that board, call max on that set of moves }
+
+	private double min(Board.Tile tile, Board board, int depth) {
+		ArrayList<Coordinate> moves = (ArrayList<Coordinate>) board.getValidMoves();
+		Board[] boards = new Board[moves.size()];
+
+		double eval = board.evaluate();
+		if (Double.isInfinite(eval) || depth == 0) {
+			return eval;
+		}
+
+		for (int move = 0; move < moves.size(); move++) {
+			try {
+				Board temp = board.move(moves.get(move), tile);
+				boards[move] = temp;
+				return max(getNextTile(tile), temp, depth - 1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return eval;
+	}
+
+	// will take list of boards, and for each board, { call move() for that board, call min on that set of moves }
+	private double max(Board.Tile tile, Board board, int depth) {
+		ArrayList<Coordinate> moves = (ArrayList<Coordinate>) board.getValidMoves();
+		Board[] boards = new Board[moves.size()];
+
+		double eval = board.evaluate();
+		if (Double.isInfinite(eval) || depth == 0) {
+			return eval;
+		}	
+
+		for (int move = 0; move < moves.size(); move++) {
+			try {
+				Board temp = board.move(moves.get(move), tile);
+				boards[move] = temp;
+				return min(getNextTile(tile), temp, depth - 1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return eval;
+	}
+
+	private Board.Tile getNextTile(Board.Tile tile) {
+		return (tile  == ComputerTile) ? AdversaryTile : ComputerTile;
+	}
 
 }

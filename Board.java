@@ -111,7 +111,7 @@ public class Board {
 	 * @throws InvalidMoveException
 	 */
 	public Board move(Coordinate move, Tile tile) throws InvalidMoveException {
-		if (isSquareBlank(move)) {
+		if (!isSquareBlank(move)) {
 			throw new InvalidMoveException();
 		}
 		Board newBoard = this.copy();
@@ -210,11 +210,12 @@ public class Board {
 
 
 	public void printTiles(int plane) {
-		for (int j = 0; j < planes[plane].getLines()[plane].getSize(); j++) {
-			System.out.print(getTile(planes[plane].getLines()[plane].getCoords()[j]) + " ");
+		for (int i = 0; i < planes.length; i++) {
+			for (int j = 0; j < planes[i].getLines()[0].getSize(); j++) {
+				System.out.print(getTile(planes[i].getLines()[0].getCoords()[j]) + " ");
+			}
+			System.out.println();
 		}
-		System.out.println();
-
 	}
 
 	public boolean isWon() {
@@ -252,7 +253,7 @@ public class Board {
 		return eval;
 	}
 
-	private void print() {
+	public void print() {
 		for (int i = 0; i < planes.length; i++) {
 			System.out.println(i + " -----");
 			this.printTiles(i);
