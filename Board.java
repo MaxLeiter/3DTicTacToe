@@ -271,7 +271,7 @@ public class Board {
 	}
 
 
-	private static class InvalidMoveException extends Exception {
+	static class InvalidMoveException extends Exception {
 		public InvalidMoveException() {
 			super("Invalid move made. Square is not blank");
 		}

@@ -1,18 +1,33 @@
 import java.util.ArrayList;
 
+
 public class Game {
 	private Board.Tile ComputerTile = Board.Tile.O; // TODO: Set in constructor when you start game
 	private Board.Tile AdversaryTile = Board.Tile.X; // TODO: Set in constructor when you start game
 
 	public static void main(String[] args) {
 		Game game = new Game();
-		System.out.println(game.start(Board.Tile.X, 15));
+		try {
+			System.out.println(game.start(Board.Tile.X, 5));
+		} catch (Board.InvalidMoveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public double start(Board.Tile turn, int maxDepth) {
+	public Coordinate start(Board.Tile turn, int maxDepth) throws Board.InvalidMoveException {
+		double bestScore = 0;
+		Coordinate bestMove = new Coordinate(0, 0, 0);
 		Board board = new Board();
 		ArrayList<Coordinate> moves = (ArrayList<Coordinate>) board.getValidMoves();
-		// this needs to know what move we're on
+		for (Coordinate move : moves) {
+			double score = board.move(move, turn).evaluate();
+			if (score > bestScore) {
+				bestScore = score;
+				bestMove = move;
+			}
+		}
+		return bestMove;
 	}
 
 	/**
@@ -23,7 +38,7 @@ public class Game {
 	 * @param depth
 	 * @return
 	 */
-	public Coordinate minimax(Board.Tile tile, Board board, int depth) {
+	public double minimax(Board.Tile tile, Board board, int depth) {
 		double score = 0;
 		if (board.isWon() || depth == 0) {
 			return score;
