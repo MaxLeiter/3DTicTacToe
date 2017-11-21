@@ -35,6 +35,7 @@ public class Board {
 	public Board(Tile[][][] tiles, Plane[] plane) {
 		this.board = tiles;
 		this.planes =  planes;
+		this.print();
 	}
 
 
@@ -81,24 +82,12 @@ public class Board {
 			}
 		}
 
-		/*
 		board[0][0][0] = Tile.X;
-		board[0][1][0] = Tile.X;
-		board[0][2][0] = Tile.O;
-		board[0][3][0] = Tile.O;
-		board[0][1][1] = Tile.X;
-		board[2][2][1] = Tile.O;
-		board[3][3][1] = Tile.O;
-		board[0][0][2] = Tile.X;
-		board[0][1][2] = Tile.O;
-		board[0][1][3] = Tile.O;
+		board[0][0][1] = Tile.O;
 		board[0][2][2] = Tile.X;
-		board[0][3][2] = Tile.X;
 		board[0][2][3] = Tile.O;
 		board[0][3][3] = Tile.X;
-		 */
 
-		System.out.println(evaluate());
 	}
 
 	/**
@@ -115,7 +104,7 @@ public class Board {
 			throw new InvalidMoveException();
 		}
 		Board newBoard = this.copy();
-
+		System.out.println("Move: " + move + ", Tile: "  + tile);
 		newBoard.board[move.getX()][move.getY()][move.getZ()] = tile;
 		return newBoard;
 	}
@@ -157,32 +146,27 @@ public class Board {
 	private double evaluatePlane(Plane plane) {
 		double eval = 0.0d;
 		for (int j = 0; j < plane.getLines().length; j++) {
-
 			int xCounter = 0;
 			int oCounter = 0;
-			this.printTiles(j);
-
+			
 			for (int k = 0; k < plane.getLines()[j].getSize(); k++) {
 				Tile rover = getTile(plane.getLines()[j].getCoords()[k]);
-				if (j == 9) {
-					System.out.print(rover + "");
-				}
+
 				if (rover == Tile.X) {
 					xCounter++;
 				} else if (rover == Tile.O) {
 					oCounter++;
 				}
+
 			}
 
-			System.out.println("X: " + xCounter);
-			System.out.println("O: " + oCounter);
 
 			if (xCounter != 0 && oCounter != 0) {
 				xCounter = oCounter = 0;
 			}
 
 			int counter = xCounter != 0 ? xCounter : -oCounter;
-			System.out.println("Counter: " + counter);
+
 			switch (Math.abs(counter)) {
 			case 0:
 				eval += 0;
@@ -198,9 +182,9 @@ public class Board {
 				break;
 			case 4:
 				if (counter > 0) {
-					eval += Double.POSITIVE_INFINITY;
+					eval = Double.POSITIVE_INFINITY;
 				} else if (counter < 0) {
-					eval += Double.NEGATIVE_INFINITY;
+					eval = Double.NEGATIVE_INFINITY;
 				}
 				break;
 			}
@@ -208,14 +192,16 @@ public class Board {
 		return eval;
 	}
 
-
 	public void printTiles(int plane) {
-		for (int i = 0; i < planes.length; i++) {
-			for (int j = 0; j < planes[i].getLines()[0].getSize(); j++) {
-				System.out.print(getTile(planes[i].getLines()[0].getCoords()[j]) + " ");
+		for (int j = 0; j < planes[plane].getLines()[0].getSize(); j++) {
+			for (int i = 0; i < planes[plane].getLines()[j].getCoords().length; i++) {
+				System.out.print(this.getTile(planes[plane].getLines()[j].getCoords()[i]) + " ");
+				if ((i + 1) % 4 == 0) {
+					System.out.println();
+				}
 			}
-			System.out.println();
 		}
+		System.out.println();
 	}
 
 	public boolean isWon() {
@@ -254,7 +240,7 @@ public class Board {
 	}
 
 	public void print() {
-		for (int i = 0; i < planes.length; i++) {
+		for (int i = 0; i <= 3; i++) {
 			System.out.println(i + " -----");
 			this.printTiles(i);
 		}
