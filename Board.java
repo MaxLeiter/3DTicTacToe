@@ -9,15 +9,15 @@ public class Board {
 
 
 	/** Constants for board evaluation **/
-	private static float c1 = 1,
-			c2 = 100,
-			c3 = 10000;
+	private static float CONSTANT_ONE_IN_ROW = 1,
+			CONSTANT_TWO_IN_ROW = 100,
+			CONSTANT_THREE_IN_ROW = 10000;
 
 	/**
 	 * The Plane[18] array.
 	 * (0, 0, 0) = bottom left closest to you. Z up. X right. Y away. Because who cares about relative, right?
 	 **/
-	private static Plane[] planes;
+	private Plane[] planes;
 
 	/**
 	 * Construct a board object
@@ -34,8 +34,7 @@ public class Board {
 	 */
 	public Board(Tile[][][] tiles, Plane[] plane) {
 		this.board = tiles;
-		this.planes =  planes;
-		this.print();
+		this.planes = plane;
 	}
 
 
@@ -82,12 +81,6 @@ public class Board {
 			}
 		}
 
-		board[0][0][0] = Tile.X;
-		board[0][0][1] = Tile.O;
-		board[0][2][2] = Tile.X;
-		board[0][2][3] = Tile.O;
-		board[0][3][3] = Tile.X;
-
 	}
 
 	/**
@@ -104,7 +97,8 @@ public class Board {
 			throw new InvalidMoveException();
 		}
 		Board newBoard = this.copy();
-		System.out.println("Move: " + move + ", Tile: "  + tile);
+	//	System.out.println("Move: " + move + ", Tile: "  + tile);
+
 		newBoard.board[move.getX()][move.getY()][move.getZ()] = tile;
 		return newBoard;
 	}
@@ -172,13 +166,13 @@ public class Board {
 				eval += 0;
 				break;
 			case 1:
-				eval += c1 * Math.signum(counter);
+				eval += CONSTANT_ONE_IN_ROW * Math.signum(counter);
 				break;
 			case 2:
-				eval += c2 * Math.signum(counter);
+				eval += CONSTANT_TWO_IN_ROW * Math.signum(counter);
 				break;
 			case 3:
-				eval += c3 * Math.signum(counter);
+				eval += CONSTANT_THREE_IN_ROW * Math.signum(counter);
 				break;
 			case 4:
 				if (counter > 0) {
