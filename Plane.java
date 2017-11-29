@@ -18,8 +18,7 @@ public class Plane {
 	private Line[] lines = new Line[10];
 
 	/**
-	 * Constructs a Plane of 10 lines. 
-	 * <code>
+	 * Constructs a Plane of 10 lines. <code>
 	 * [a][b][ ][ ] <br>
 	 * [c][ ][ ][ ] <br>
 	 * [ ][ ][ ][ ] <br>
@@ -44,40 +43,36 @@ public class Plane {
 		for (int count = 0; count < lines.length; count++) {
 			for (int lineIndex = 0; lineIndex < lines[count].getCoords().length; lineIndex++) {
 
-				switch(count) {
+				switch (count) {
 				case 0: // vertical
 				case 1:
 				case 2:
 				case 3:
-					lines[count].setCoord(lineIndex, new Coordinate(
-							a.getX() + lineIndex * rxDiff + (count % 4) * cxDiff,
-							a.getY() + lineIndex * ryDiff + (count % 4) * cyDiff,
-							a.getZ() + lineIndex * rzDiff + (count % 4) * czDiff
-							));
+					lines[count].setCoord(lineIndex,
+							new Coordinate(a.getX() + lineIndex * rxDiff + (count % 4) * cxDiff,
+									a.getY() + lineIndex * ryDiff + (count % 4) * cyDiff,
+									a.getZ() + lineIndex * rzDiff + (count % 4) * czDiff));
 					break;
 				case 4: // horizontal
 				case 5:
 				case 6:
 				case 7:
-					lines[count].setCoord(lineIndex, new Coordinate(
-							a.getX() + lineIndex * cxDiff + (count % 4) * rxDiff,
-							a.getY() + lineIndex * cyDiff + count * ryDiff,
-							a.getZ() + lineIndex * czDiff + (count % 4) * rzDiff
-							));
+					lines[count].setCoord(lineIndex,
+							new Coordinate(a.getX() + lineIndex * cxDiff + (count % 4) * rxDiff,
+									a.getY() + lineIndex * cyDiff + count * ryDiff,
+									a.getZ() + lineIndex * czDiff + (count % 4) * rzDiff));
 					break;
 				case 8: // y = x
-					lines[count].setCoord(lineIndex, new Coordinate(
-							a.getX() + lineIndex * rxDiff + lineIndex * cxDiff,
-							a.getY() + lineIndex * ryDiff + lineIndex * cyDiff,
-							a.getZ() + lineIndex * rzDiff + lineIndex * czDiff
-							));
+					lines[count].setCoord(lineIndex,
+							new Coordinate(a.getX() + lineIndex * rxDiff + lineIndex * cxDiff,
+									a.getY() + lineIndex * ryDiff + lineIndex * cyDiff,
+									a.getZ() + lineIndex * rzDiff + lineIndex * czDiff));
 					break;
 				case 9: // y = 3 - x
-					lines[count].setCoord(lineIndex, new Coordinate(
-							a.getX() + 3 * rxDiff - lineIndex * rxDiff + lineIndex * cxDiff,
-							a.getY() + 3 * ryDiff - lineIndex * ryDiff + lineIndex * cyDiff,
-							a.getZ() + 3 * rzDiff - lineIndex * rzDiff + lineIndex * czDiff
-							));
+					lines[count].setCoord(lineIndex,
+							new Coordinate(a.getX() + 3 * rxDiff - lineIndex * rxDiff + lineIndex * cxDiff,
+									a.getY() + 3 * ryDiff - lineIndex * ryDiff + lineIndex * cyDiff,
+									a.getZ() + 3 * rzDiff - lineIndex * rzDiff + lineIndex * czDiff));
 					break;
 				default:
 					// no-op
@@ -90,25 +85,28 @@ public class Plane {
 
 	/**
 	 * (r, c) -> (x, y, z)
-	 * @param r row
-	 * @param c column
+	 * 
+	 * @param r
+	 *            row
+	 * @param c
+	 *            column
 	 * @return
 	 */
 	public Coordinate getXYZCoordinate(int r, int c) {
-		Coordinate temp = new Coordinate(a.getX() + r * rxDiff + c * cxDiff, a.getY() + r * ryDiff + c * cyDiff, a.getZ() + r * rzDiff + c * czDiff);
+		Coordinate temp = new Coordinate(a.getX() + r * rxDiff + c * cxDiff, a.getY() + r * ryDiff + c * cyDiff,
+				a.getZ() + r * rzDiff + c * czDiff);
 		return temp;
 	}
-
 
 	/**
 	 * Returns an array of <code>Line</code>'s. <br>
 	 * Hopefully size 10, otherwise messed up.
+	 * 
 	 * @return Line[10] lines
 	 **/
 	public Line[] getLines() {
 		return lines;
 	}
-
 
 	/**
 	 * Print 10 lines in a plane

@@ -80,6 +80,8 @@ public class Board {
 				}
 			}
 		}
+		board[0][0][0] = Tile.X;
+		board[0][1][0] = Tile.X;
 
 	}
 
@@ -97,7 +99,7 @@ public class Board {
 			throw new InvalidMoveException();
 		}
 		Board newBoard = this.copy();
-	//	System.out.println("Move: " + move + ", Tile: "  + tile);
+		//	System.out.println("Move: " + move + ", Tile: "  + tile);
 
 		newBoard.board[move.getX()][move.getY()][move.getZ()] = tile;
 		return newBoard;
@@ -142,7 +144,7 @@ public class Board {
 		for (int j = 0; j < plane.getLines().length; j++) {
 			int xCounter = 0;
 			int oCounter = 0;
-			
+
 			for (int k = 0; k < plane.getLines()[j].getSize(); k++) {
 				Tile rover = getTile(plane.getLines()[j].getCoords()[k]);
 
@@ -269,5 +271,6 @@ public class Board {
 
 		return new Board(newBoard, planes);
 	}
+
 }
 

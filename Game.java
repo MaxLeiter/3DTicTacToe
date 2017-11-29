@@ -1,9 +1,12 @@
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Game {
 	private Board.Tile ComputerTile = Board.Tile.X; // TODO: Set in constructor when you start game
 	private Board.Tile AdversaryTile = Board.Tile.O; // TODO: Set in constructor when you start game
-	private static boolean debug = false;
+	private static boolean DEBUG = true;
+	private static boolean MOVE_ORDER = false;
 
 	public static void main(String[] args) {
 		Game game = new Game();
@@ -27,7 +30,7 @@ public class Game {
 		for (Coordinate move : moves) {
 			Board temp = board.move(move, turn);
 			double score = minimax(getNextTile(turn), temp, maxDepth, alpha, beta);
-			if (debug) {
+			if (DEBUG) {
 				System.out.println("score: " + score);
 				System.out.println("bestScore: " + bestScore);
 			}
@@ -77,26 +80,32 @@ public class Game {
 			return eval;
 		}
 
-		List<Coordinate> moves = board.getValidMoves();
-
-		double lowestMax = Double.POSITIVE_INFINITY; // need to maximize this
-		for (int index = 0; index < moves.size(); index++) {
+		List<Coordinate> coords = board.getValidMoves();
+		List<Board> boards = new ArrayList<>();
+		for (Coordinate move : coords) {
 			try {
-				Coordinate move = moves.get(index);
-				Board temp = board.move(move, tile);
-				double max = max(getNextTile(tile), temp, depth - 1, alpha, beta);
-				if (max < lowestMax) {
-					lowestMax = max;
-				}
-				if (lowestMax <= alpha) {
-					return lowestMax;
-				}
-				beta = Math.min(beta, lowestMax);
+				boards.add(board.move(move, tile));
 			} catch (Board.InvalidMoveException e) {
 				e.printStackTrace();
 			}
 		}
 
+		if (MOVE_ORDER) {
+			boards = orderMoves(boards);
+		}
+
+		double lowestMax = Double.POSITIVE_INFINITY; // need to maximize this
+		for (int index = 0; index < boards.size(); index++) {
+			Board temp = boards.get(index);
+			double max = max(getNextTile(tile), temp, depth - 1, alpha, beta);
+			if (max < lowestMax) {
+				lowestMax = max;
+			}
+			if (lowestMax <= alpha) {
+				return lowestMax;
+			}
+			beta = Math.min(beta, lowestMax);
+		}
 		return lowestMax;
 	}
 
@@ -107,37 +116,55 @@ public class Game {
 			return eval;
 		}
 
-		List<Coordinate> moves = board.getValidMoves();
-
-		double largestMin = Double.NEGATIVE_INFINITY; // need to minimize this
-		Coordinate bestMinMove = null; // for debugging purposes
-
-		for (int index = 0; index < moves.size(); index++) {
+		List<Coordinate> coords = board.getValidMoves();
+		List<Board> boards = new ArrayList<>();
+		for (Coordinate move : coords) {
 			try {
-				Coordinate move = moves.get(index);
-				Board temp = board.move(move, tile);
-				double min = min(getNextTile(tile), temp, depth - 1, alpha, beta);
-				if (min > largestMin) { // largestMin = Math.max(largestMin, min);
-					largestMin = min;
-					bestMinMove = move;
-				}
-				if (largestMin >= beta) {
-					return largestMin;
-				}
-				alpha = Math.max(alpha, largestMin);
+				boards.add(board.move(move, tile));
 			} catch (Board.InvalidMoveException e) {
 				e.printStackTrace();
 			}
 		}
 
-		if (debug) {
-			System.out.println("coords: " + bestMinMove);
+		if (MOVE_ORDER) {
+			boards = orderMoves(boards);
 		}
+
+		double largestMin = Double.NEGATIVE_INFINITY; // need to minimize this
+		for (int index = 0; index < boards.size(); index++) {
+			Board temp = boards.get(index);
+			double min = min(getNextTile(tile), temp, depth - 1, alpha, beta);
+			if (min > largestMin) { // largestMin = Math.max(largestMin, min);
+				largestMin = min;
+			}
+			if (largestMin >= beta) {
+				return largestMin;
+			}
+			alpha = Math.max(alpha, largestMin);
+
+		}
+
 		return largestMin;
 	}
 
 	private Board.Tile getNextTile(Board.Tile tile) {
 		return (tile == ComputerTile) ? AdversaryTile : ComputerTile;
+	}
+
+	private List<Board> orderMoves(List<Board> boards) {
+		boards.sort(new Comparator<Board>() {
+			@Override
+			public int compare(Board first, Board second) {
+				if (first.evaluate() < second.evaluate()) {
+					return 1;
+				} else if (first.evaluate() > second.evaluate()) {
+					return -1;
+				} else {
+					return 0; // Same score
+				}
+			}
+		});
+		return boards;
 	}
 
 }
