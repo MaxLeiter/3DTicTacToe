@@ -80,8 +80,7 @@ public class Board {
 				}
 			}
 		}
-		board[0][0][0] = Tile.X;
-		board[0][1][0] = Tile.X;
+
 
 	}
 

@@ -42,7 +42,7 @@ public class Coordinate {
 
 	@Override
 	public String toString() {
-		return getX() + "," + getY() + "," + getZ();
+		return getX() + " " + getY() + " " + getZ();
 	}
 
 }

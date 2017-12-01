@@ -1,170 +1,100 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Scanner;
 
 public class Game {
-	private Board.Tile ComputerTile = Board.Tile.X; // TODO: Set in constructor when you start game
-	private Board.Tile AdversaryTile = Board.Tile.O; // TODO: Set in constructor when you start game
-	private static boolean DEBUG = true;
-	private static boolean MOVE_ORDER = false;
-
 	public static void main(String[] args) {
-		Game game = new Game();
+		Scanner scanner = new Scanner(System.in);
+		Board board = new Board();
+		System.out.println("Welcome to 4D Tic Tac Toe.");
+		System.out.println("Player tile is O. AI has first move.");
+		System.out.println("Player: input coordinates as `x <space> y <space> z`");
+
+		while (board.getValidMoves().size() > 0 && !board.isWon()) {
+			Coordinate move;
+			Board.Tile tile;
+			move = aiMove(board);
+			tile = Board.Tile.X; // computer
+			testMove(board, move, tile);
+
+			try {
+				board = board.move(move, tile);
+				System.out.println("AI moved " + move);
+			} catch (Board.InvalidMoveException e) {
+				e.printStackTrace();
+			}
+
+			tile = Board.Tile.O; // player
+			boolean success = false;
+			if (board.isWon()) {
+				System.out.println("AI won.");
+				return;
+			}
+
+			do {
+				move = playerMove(board, scanner);
+				success = testMove(board, move, tile);
+				if (!success) {
+					System.out.println("Invalid move. Try again.");
+				}
+			} while (!success);
+
+			try {
+				board = board.move(move, tile);
+				System.out.println("Player moved " + move);
+			} catch (Board.InvalidMoveException e) {
+				e.printStackTrace();
+			}
+			if (board.isWon()) {
+				System.out.println("Player Won");
+			}
+			board.print();
+		}
+
+	}
+
+	public static boolean testMove(Board board, Coordinate move, Board.Tile tile) {
 		try {
-			Coordinate x = game.start(Board.Tile.X, 4);
-			// if (debug) {
-			System.out.printf("board[%d][%d][%d] = Tile.X", x.getX(), x.getY(), x.getZ());
-			// }
+			board.move(move, tile);
+			return true;
+		} catch (Board.InvalidMoveException e) {
+			return false;
+		}
+	}
+
+	public static Coordinate aiMove(Board board) {
+		AI ai = new AI();
+		Coordinate x = null;
+		try {
+			x = ai.start(board, Board.Tile.X, 2);
 		} catch (Board.InvalidMoveException e) {
 			e.printStackTrace();
 		}
+		return x;
 	}
 
-	public Coordinate start(Board.Tile turn, int maxDepth) throws Board.InvalidMoveException {
-		double bestScore = Double.NEGATIVE_INFINITY;
-		Coordinate bestMove = null;
-		Board board = new Board();
-		List<Coordinate> moves = board.getValidMoves();
-		double alpha = Double.NEGATIVE_INFINITY;
-		double beta = Double.POSITIVE_INFINITY;
-		for (Coordinate move : moves) {
-			Board temp = board.move(move, turn);
-			double score = minimax(getNextTile(turn), temp, maxDepth, alpha, beta);
-			if (DEBUG) {
-				System.out.println("score: " + score);
-				System.out.println("bestScore: " + bestScore);
-			}
+	public static Coordinate playerMove(Board board, Scanner scanner) {
+		System.out.print("Coordinate to move: ");
+		String move = "";
+		int x = 0, y = 0, z = 0;
 
-			if (score > bestScore) {
-				bestScore = score;
-				bestMove = move;
-				System.out.println("Set");
-				if (Double.isInfinite(bestScore)) {
-					break;
+		if (scanner.hasNextLine()) {
+			move = scanner.nextLine();
+			String[] parsed = move.split(" ");
+			try {
+				x = Integer.parseInt(parsed[0]);
+				y = Integer.parseInt(parsed[1]);
+				z = Integer.parseInt(parsed[2]);
+				if ((x > 3 || x < 0) || (y > 3 || y < 0) || (z > 3 || z < 0)) {
+					throw new Exception();
 				}
+			} catch (Exception e) {
+				System.out.println("Invalid move.");
+				playerMove(board, scanner);
 			}
 
-		}
-		return bestMove;
-	}
-
-	/**
-	 * Returns the best move to be made using alpha-beta
-	 * 
-	 * @param tile
-	 * @param board
-	 * @param depth
-	 * @return utility value
-	 */
-	public double minimax(Board.Tile tile, Board board, int maxDepth, double alpha, double beta) {
-		double score = 0;
-		if (tile == ComputerTile) {
-			score = max(tile, board, maxDepth, alpha, beta);
 		} else {
-			score = min(tile, board, maxDepth, alpha, beta);
+			System.err.print("Invalid input");
+			playerMove(board, scanner);
 		}
-		return score;
+		return new Coordinate(x, y, z);
 	}
-
-	/**
-	 * Returns utility value. Minimize opponent.
-	 * 
-	 * @param board
-	 * @return utility value
-	 */
-
-	private double min(Board.Tile tile, Board board, int depth, double alpha, double beta) {
-		double eval = board.evaluate();
-
-		if (Double.isInfinite(eval) || depth <= 0) {
-			return eval;
-		}
-
-		List<Coordinate> coords = board.getValidMoves();
-		List<Board> boards = new ArrayList<>();
-		for (Coordinate move : coords) {
-			try {
-				boards.add(board.move(move, tile));
-			} catch (Board.InvalidMoveException e) {
-				e.printStackTrace();
-			}
-		}
-
-		if (MOVE_ORDER) {
-			boards = orderMoves(boards);
-		}
-
-		double lowestMax = Double.POSITIVE_INFINITY; // need to maximize this
-		for (int index = 0; index < boards.size(); index++) {
-			Board temp = boards.get(index);
-			double max = max(getNextTile(tile), temp, depth - 1, alpha, beta);
-			if (max < lowestMax) {
-				lowestMax = max;
-			}
-			if (lowestMax <= alpha) {
-				return lowestMax;
-			}
-			beta = Math.min(beta, lowestMax);
-		}
-		return lowestMax;
-	}
-
-	private double max(Board.Tile tile, Board board, int depth, double alpha, double beta) {
-		double eval = board.evaluate();
-
-		if (Double.isInfinite(eval) || depth <= 0) {
-			return eval;
-		}
-
-		List<Coordinate> coords = board.getValidMoves();
-		List<Board> boards = new ArrayList<>();
-		for (Coordinate move : coords) {
-			try {
-				boards.add(board.move(move, tile));
-			} catch (Board.InvalidMoveException e) {
-				e.printStackTrace();
-			}
-		}
-
-		if (MOVE_ORDER) {
-			boards = orderMoves(boards);
-		}
-
-		double largestMin = Double.NEGATIVE_INFINITY; // need to minimize this
-		for (int index = 0; index < boards.size(); index++) {
-			Board temp = boards.get(index);
-			double min = min(getNextTile(tile), temp, depth - 1, alpha, beta);
-			if (min > largestMin) { // largestMin = Math.max(largestMin, min);
-				largestMin = min;
-			}
-			if (largestMin >= beta) {
-				return largestMin;
-			}
-			alpha = Math.max(alpha, largestMin);
-
-		}
-
-		return largestMin;
-	}
-
-	private Board.Tile getNextTile(Board.Tile tile) {
-		return (tile == ComputerTile) ? AdversaryTile : ComputerTile;
-	}
-
-	private List<Board> orderMoves(List<Board> boards) {
-		boards.sort(new Comparator<Board>() {
-			@Override
-			public int compare(Board first, Board second) {
-				if (first.evaluate() < second.evaluate()) {
-					return 1;
-				} else if (first.evaluate() > second.evaluate()) {
-					return -1;
-				} else {
-					return 0; // Same score
-				}
-			}
-		});
-		return boards;
-	}
-
 }
