@@ -4,52 +4,54 @@ public class Game {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		Board board = new Board();
+
 		System.out.println("Welcome to 4D Tic Tac Toe.");
-		System.out.println("Player tile is O. AI has first move.");
+		Board.Tile playerTile = getPlayerTile(scanner);
+
 		System.out.println("Player: input coordinates as `x <space> y <space> z`");
 
 		while (board.getValidMoves().size() > 0 && !board.isWon()) {
-			Coordinate move;
-			Board.Tile tile;
-			move = aiMove(board);
-			tile = Board.Tile.X; // computer
-			testMove(board, move, tile);
-
-			try {
-				board = board.move(move, tile);
-				System.out.println("AI moved " + move);
-			} catch (Board.InvalidMoveException e) {
-				e.printStackTrace();
-			}
-
-			tile = Board.Tile.O; // player
-			boolean success = false;
-			if (board.isWon()) {
-				System.out.println("AI won.");
-				return;
-			}
-
-			do {
-				move = playerMove(board, scanner);
-				success = testMove(board, move, tile);
-				if (!success) {
-					System.out.println("Invalid move. Try again.");
+			Board.Tile currentTile;
+			if (playerTile == Board.Tile.O) {
+				
+				currentTile = Board.Tile.X;
+				board = aiMove(board, currentTile);
+				if (board.isWon()) {
+					System.out.println(currentTile + " won!");
+					break;
 				}
-			} while (!success);
+				currentTile = Board.Tile.O;
+				board = playerMove(board, scanner, currentTile);
+				if (board.isWon()) {
+					System.out.println(currentTile + " won!");
+					break;
+				}
+			} else {
+				currentTile = Board.Tile.X;
+				board = playerMove(board, scanner, currentTile);
+				if (board.isWon()) {
+					System.out.println(currentTile + " won!");
+					break;
+				}
+				currentTile = Board.Tile.O;
+				board = aiMove(board, currentTile);
+				if (board.isWon()) {
+					System.out.println(currentTile + " won!");
+					break;
+				}
+			}
 
-			try {
-				board = board.move(move, tile);
-				System.out.println("Player moved " + move);
-			} catch (Board.InvalidMoveException e) {
-				e.printStackTrace();
-			}
-			if (board.isWon()) {
-				System.out.println("Player Won");
-			}
-			board.print();
+		}
+		if (board.getValidMoves().isEmpty()) {
+			System.out.println("Draw. All spaces filled.");
+		}
+		
+		if (board.isWon()) {
+			System.out.println("Game over.");
 		}
 
 	}
+
 
 	public static boolean testMove(Board board, Coordinate move, Board.Tile tile) {
 		try {
@@ -60,25 +62,37 @@ public class Game {
 		}
 	}
 
-	public static Coordinate aiMove(Board board) {
+	public static Board aiMove(Board board, Board.Tile aiTile) {
 		AI ai = new AI();
-		Coordinate x = null;
+		Coordinate move = null;
+
 		try {
-			x = ai.start(board, Board.Tile.X, 2);
+			move = ai.start(board, aiTile, 2);
 		} catch (Board.InvalidMoveException e) {
 			e.printStackTrace();
 		}
-		return x;
+		//testMove(board, move, aiTile);
+
+		try {
+			board = board.move(move, aiTile);
+			board.print();
+			System.out.println("AI moved " + move);
+		} catch (Board.InvalidMoveException e) {
+			e.printStackTrace();
+		}
+
+		return board;
+
 	}
 
-	public static Coordinate playerMove(Board board, Scanner scanner) {
+	public static Board playerMove(Board board, Scanner scanner, Board.Tile playerTile) {
 		System.out.print("Coordinate to move: ");
-		String move = "";
+		String input = "";
 		int x = 0, y = 0, z = 0;
 
 		if (scanner.hasNextLine()) {
-			move = scanner.nextLine();
-			String[] parsed = move.split(" ");
+			input = scanner.nextLine();
+			String[] parsed = input.split(" ");
 			try {
 				x = Integer.parseInt(parsed[0]);
 				y = Integer.parseInt(parsed[1]);
@@ -88,13 +102,49 @@ public class Game {
 				}
 			} catch (Exception e) {
 				System.out.println("Invalid move.");
-				playerMove(board, scanner);
+				return playerMove(board, scanner, playerTile);
 			}
 
 		} else {
 			System.err.print("Invalid input");
-			playerMove(board, scanner);
+			return playerMove(board, scanner, playerTile);
 		}
-		return new Coordinate(x, y, z);
+		Coordinate move;
+		boolean success = false;
+		do {
+			move = new Coordinate(x, y, z);
+
+			success = testMove(board, move, playerTile);
+			if (!success) {
+				System.out.println("Invalid move. Try again.");
+				return playerMove(board, scanner, playerTile);
+			}
+		} while (!success);
+
+		try {
+			board = board.move(move, playerTile);
+			board.print();
+			System.out.println("Player moved " + move);
+		} catch (Board.InvalidMoveException e) {
+			e.printStackTrace();
+		}
+		return board;
+	}
+
+	public static Board.Tile getPlayerTile(Scanner scanner) {
+		System.out.print("Player tile is (X / O): ");
+		String tile = "";
+		if (scanner.hasNextLine()) {
+			tile = scanner.nextLine();
+			if (tile.toUpperCase().equals("X")) {
+				return Board.Tile.X;
+			} else if (tile.toUpperCase().equals("O")) {
+				return Board.Tile.O;
+			} else {
+				System.out.println("Invalid Tile. Must be X or O.");
+				getPlayerTile(scanner);
+			}
+		}
+		return null;
 	}
 }

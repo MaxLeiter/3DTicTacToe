@@ -9,8 +9,8 @@ public class Board {
 
 
 	/** Constants for board evaluation **/
-	private static float CONSTANT_ONE_IN_ROW = 1,
-			CONSTANT_TWO_IN_ROW = 100,
+	private static float CONSTANT_ONE_IN_ROW = 10,
+			CONSTANT_TWO_IN_ROW = 1000,
 			CONSTANT_THREE_IN_ROW = 10000;
 
 	/**
