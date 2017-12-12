@@ -13,7 +13,7 @@ public class Game {
 		while (board.getValidMoves().size() > 0 && !board.isWon()) {
 			Board.Tile currentTile;
 			if (playerTile == Board.Tile.O) {
-				
+
 				currentTile = Board.Tile.X;
 				board = aiMove(board, currentTile);
 				if (board.isWon()) {
@@ -45,13 +45,12 @@ public class Game {
 		if (board.getValidMoves().isEmpty()) {
 			System.out.println("Draw. All spaces filled.");
 		}
-		
+
 		if (board.isWon()) {
 			System.out.println("Game over.");
 		}
 
 	}
-
 
 	public static boolean testMove(Board board, Coordinate move, Board.Tile tile) {
 		try {
@@ -71,7 +70,7 @@ public class Game {
 		} catch (Board.InvalidMoveException e) {
 			e.printStackTrace();
 		}
-		//testMove(board, move, aiTile);
+		// testMove(board, move, aiTile);
 
 		try {
 			board = board.move(move, aiTile);

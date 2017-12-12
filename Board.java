@@ -138,29 +138,29 @@ public class Board {
 		return coords;
 	}
 
-	private double evaluatePlane(Plane plane) {
+	private double evaluatePlane(Plane plane, Tile tile) {
 		double eval = 0.0d;
 		for (int j = 0; j < plane.getLines().length; j++) {
-			int xCounter = 0;
-			int oCounter = 0;
+			int tileCounter = 0;
+			int adversaryCounter = 0;
 
 			for (int k = 0; k < plane.getLines()[j].getSize(); k++) {
 				Tile rover = getTile(plane.getLines()[j].getCoords()[k]);
 
-				if (rover == Tile.X) {
-					xCounter++;
-				} else if (rover == Tile.O) {
-					oCounter++;
+				if (rover == tile) {
+					tileCounter++;
+				} else if (rover == Board.getNextTile(tile)) {
+					adversaryCounter++;
 				}
 
 			}
 
 
-			if (xCounter != 0 && oCounter != 0) {
-				xCounter = oCounter = 0;
+			if (tileCounter != 0 && adversaryCounter != 0) {
+				tileCounter = adversaryCounter = 0;
 			}
 
-			int counter = xCounter != 0 ? xCounter : -oCounter;
+			int counter = tileCounter != 0 ? tileCounter : -adversaryCounter;
 
 			switch (Math.abs(counter)) {
 			case 0:
@@ -226,10 +226,10 @@ public class Board {
 		return false;
 	}
 
-	public double evaluate() {
+	public double evaluate(Tile tile) {
 		double eval = 0.0d;
 		for (int i = 0; i < planes.length; i++) {
-			eval += evaluatePlane(planes[i]);
+			eval += evaluatePlane(planes[i], tile);
 		}
 		return eval;
 	}
@@ -270,6 +270,11 @@ public class Board {
 
 		return new Board(newBoard, planes);
 	}
+	
+	public static Board.Tile getNextTile(Board.Tile tile) {
+		return (tile == Tile.X) ? Tile.O : Tile.X;
+	}
+
 
 }
 
