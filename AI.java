@@ -3,7 +3,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AI {
-	private static boolean DEBUG = true;
+	private static boolean DEBUG = false;
 	private static boolean MOVE_ORDER = false;
 
 	public Coordinate start(Board board, Board.Tile ComputerTile, int maxDepth) throws Board.InvalidMoveException {
@@ -16,21 +16,18 @@ public class AI {
 			Board temp = board.move(move, ComputerTile);
 			double score = min(Board.getNextTile(ComputerTile), temp, maxDepth, alpha, beta);
 
-			if (score > bestScore) {
+			if (score >= bestScore) {
 				bestScore = score;
 				bestMove = move;
 			}
+
+
 
 			if (DEBUG) {
 				System.out.println("score: " + score);
 				System.out.println("bestScore: " + bestScore);
 			}
 		}
-		
-		if (bestMove == null) {
-			return board.getValidMoves().get(0);
-		}
-
 		return bestMove;
 	}
 
@@ -76,6 +73,7 @@ public class AI {
 			}
 			beta = Math.min(beta, lowestMax);
 		}
+
 		return lowestMax;
 	}
 

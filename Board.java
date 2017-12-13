@@ -81,9 +81,7 @@ public class Board {
 			}
 		}
 
-
 	}
-
 	/**
 	 * Makes a move
 	 * @param x
