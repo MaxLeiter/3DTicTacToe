@@ -44,5 +44,9 @@ public class Coordinate {
 	public String toString() {
 		return getX() + " " + getY() + " " + getZ();
 	}
+	
+	public boolean isCorner() {
+		return (x == 3 || x == 0 && y == 3 || y == 0 && z == 3 || z == 0);
+	}
 
 }

@@ -5,7 +5,7 @@ public class Game {
 		Scanner scanner = new Scanner(System.in);
 		Board board = new Board();
 
-		System.out.println("Welcome to 4D Tic Tac Toe.");
+		System.out.println("Welcome to 3D Tic Tac Toe.");
 		Board.Tile playerTile = getPlayerTile(scanner);
 
 		System.out.println("Player: input coordinates as `x <space> y <space> z`");

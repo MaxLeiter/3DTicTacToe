@@ -82,6 +82,7 @@ public class Board {
 		}
 
 	}
+
 	/**
 	 * Makes a move
 	 * @param x
@@ -150,8 +151,8 @@ public class Board {
 				} else if (rover == Board.getNextTile(tile)) {
 					adversaryCounter++;
 				}
-
 			}
+	
 
 
 			if (tileCounter != 0 && adversaryCounter != 0) {
@@ -244,9 +245,9 @@ public class Board {
 	}
 
 	public static enum Tile {
+		B,
 		X,
-		O,
-		B
+		O
 	}
 
 

@@ -66,7 +66,9 @@ public class AI {
 			double max = max(Board.getNextTile(tile), temp, depth - 1, alpha, beta);
 			if (max < lowestMax) {
 				lowestMax = max;
-				System.out.println("lowestMax set to " + lowestMax);
+				if (DEBUG) {
+					System.out.println("lowestMax set to " + lowestMax);
+				}
 			}
 			if (lowestMax <= alpha) {
 				return lowestMax;
@@ -101,6 +103,7 @@ public class AI {
 		double largestMin = Double.NEGATIVE_INFINITY; // need to maximize this
 		for (int index = 0; index < boards.size(); index++) {
 			Board temp = boards.get(index);
+
 			double min = min(Board.getNextTile(tile), temp, depth - 1, alpha, beta);
 			if (min > largestMin) { // largestMin = Math.max(largestMin, min);
 				largestMin = min;
